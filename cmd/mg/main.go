@@ -8,7 +8,7 @@ import (
 	"path"
 	"strings"
 
-	"github/0xlucius/multi-git/pkg/repo_manager"
+	"github.com/0xlucius/multi-git/pkg/repo_manager"
 )
 
 func main() {

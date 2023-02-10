@@ -51,6 +51,7 @@ func (m *RepoManager) GetRepos() ([]string) {
 }
 
 func (m *RepoManager) Exec(cmd string) (output map[string]string, err error) {
+	output = map[string]string{}
 	var (
 		start int
 		end int
