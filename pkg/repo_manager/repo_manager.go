@@ -1,7 +1,6 @@
 package repo_manager
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -20,13 +19,13 @@ func NewRepoManager(baseDir string,
 	_, err = os.Stat(baseDir)
 	if err != nil {
 		if os.IsNotExist(err) {
-			err = errors.New(fmt.Sprintf("base dir: '%s' doesn't exist", baseDir))
+			err = fmt.Errorf("base dir: '%s' doesn't exist", baseDir)
 		}
 		return
 	}
 
 	if len(repoNames) == 0 {
-		err = errors.New(fmt.Sprintf("repo list can't be empty"))
+		err = fmt.Errorf("repo list can't be empty")
 		return
 	}
 
@@ -60,7 +59,7 @@ func (m *RepoManager) Exec(cmd string) (output map[string]string, err error) {
 	)
 
 	for i, component := range strings.Split(cmd, " ") {
-		if insentence == true {
+		if insentence{
 			if !strings.HasSuffix(component, "\""){
 				continue
 			}
