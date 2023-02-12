@@ -84,7 +84,13 @@ func (m *RepoManager) Exec(cmd string) (output map[string]string, err error) {
 	var out []byte
 
 	for _, repo := range m.repos {
-		os.Chdir(repo)
+		err = os.Chdir(repo)
+		if err != nil {
+			if m.ignoreErrors{
+				continue
+			}
+			return
+		}
 
 		out, err = exec.Command("git", components...).CombinedOutput()
 

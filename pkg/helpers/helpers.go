@@ -33,7 +33,7 @@ func AddFiles(baseDir string,
 	dir := path.Join(baseDir, dirName)
 	for _, file := range filesNames {
 		data := []byte("File data for: " + file)
-		err = os.WriteFile(dir, data, os.ModePerm)
+		err = os.WriteFile(path.Join(dir, file), data, os.ModePerm)
 		if err != nil {
 			return
 		}
@@ -51,6 +51,6 @@ func AddFiles(baseDir string,
 	if err != nil {
 		return
 	}
-	err = exec.Command("git", "commit", "-m", "Add files").Run()
+	err = exec.Command("git", "commit", "-m", "added files").Run()
 	return
 }

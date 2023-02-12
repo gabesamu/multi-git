@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/0xlucius/multi-git/pkg/helpers"
@@ -14,7 +15,7 @@ import (
 )
 
 var _ = Describe("RepoManager", func() {
-	const baseDir = "/tmp/test-multi-git"
+	baseDir, _ := filepath.Abs("tmp/test-multi-git")
 	var repoList []string
 
 	removeTestDirs := func() {
@@ -25,7 +26,7 @@ var _ = Describe("RepoManager", func() {
 	BeforeEach(func() {
 		err := helpers.CreateDir(baseDir, "test-dir1", true)
 		Expect(err).To(BeNil())
-		repoList = []string{"test-dir-1"}
+		repoList = []string{"test-dir1"}
 	})
 
 	AfterEach(removeTestDirs)
@@ -72,7 +73,7 @@ var _ = Describe("RepoManager", func() {
 			fmt.Println(output)
 			Expect(err).To(BeNil())
 
-			ok := strings.HasSuffix(output[dir], "added some files...\n")
+			ok := strings.HasSuffix(output[dir], "added files\n")
 			Expect(ok).To(BeTrue())
 		})
 	})
