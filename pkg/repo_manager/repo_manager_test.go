@@ -55,10 +55,30 @@ var _ = Describe("RepoManager", func() {
 
 	Describe("Executing Git commands", func ()  {
 
+		It("Should create branches successfully", func() {
+			repoList = append(repoList, "dir-2")
+			helpers.CreateDir(baseDir, repoList[1], true)
+			rm, err := NewRepoManager(baseDir, repoList, true)
+			Expect(err).To(BeNil())
+
+			output, err := rm.Exec("checkout -b test-branch")
+			Expect(err).To(BeNil())
+
+			for _, out := range output {
+				Expect(out).To(Equal("Switched to a new branch 'test-branch'\n"))
+			}
+		})
 		It("Should commit files successfully", func() {
 			rm, _ := NewRepoManager(baseDir, repoList, true)
 
-			err := helpers.AddFiles(baseDir, repoList[0], true, "file_1.txt", "file_2.txt")
+			output, err := rm.Exec("checkout -b test-branch")
+			Expect(err).To(BeNil())
+
+			for _, out := range output {
+				Expect(out).To(Equal("Switched to a new branch 'test-branch'\n"))
+			}
+
+			err = helpers.AddFiles(baseDir, repoList[0], true, "file_1.txt", "file_2.txt")
 			Expect(err).To(BeNil())
 
 			// Restore working directory after executing the command
@@ -69,7 +89,7 @@ var _ = Describe("RepoManager", func() {
 			err = os.Chdir(dir)
 			Expect(err).To(BeNil())
 
-			output, err := rm.Exec("log --oneline")
+			output, err = rm.Exec("log --oneline")
 			fmt.Println(output)
 			Expect(err).To(BeNil())
 
