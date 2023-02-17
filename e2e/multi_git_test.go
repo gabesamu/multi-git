@@ -5,14 +5,13 @@ import (
 	. "github.com/onsi/gomega"
 
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/0xlucius/multi-git/pkg/helpers"
 )
 
 var _ = Describe("MultiGit", func() {
-	baseDir, _ := filepath.Abs("tmp/test-multi-git")
+	const baseDir = "/tmp/multi-git"
 	var repoList string
 	var err error
 
@@ -29,9 +28,9 @@ var _ = Describe("MultiGit", func() {
 
 	Context("When ran with empty/undefined evironment", func ()  {
 		It("Should fail with empty base directory", func ()  {
-			out, err := helpers.RunMultiGit("status", false, "/does not exist", repoList , false)
+			out, err := helpers.RunMultiGit("status", false, "/does-not-exist", repoList , false)
 			Expect(err).ToNot(BeNil())
-			errMessage := "base dir: '/no-such-dir/' doesn't exist\n"
+			errMessage := "base dir: '/does-not-exist/' doesn't exist\n"
 			Expect(out).To(HaveSuffix(errMessage))
 		})
 
@@ -51,7 +50,7 @@ var _ = Describe("MultiGit", func() {
 				Expect(err).To(BeNil())
 				repoList = "dir-1,dir-2"
 
-				output, err := helpers.RunMultiGit("init", false, baseDir, repoList, true)
+				output, err := helpers.RunMultiGit("init", false, baseDir, repoList, false)
 				Expect(err).To(BeNil())
 				count := strings.Count(output, "Initialized empty Git repository")
 				Expect(count).To(Equal(2))
@@ -64,7 +63,7 @@ var _ = Describe("MultiGit", func() {
 				Expect(err).To(BeNil())
 				repoList = "dir-1,dir-2"
 
-				output, err := helpers.RunMultiGit("status", false, baseDir, repoList, true)
+				output, err := helpers.RunMultiGit("status", false, baseDir, repoList, false)
 				Expect(err).To(BeNil())
 				count := strings.Count(output, "nothing to commit")
 				Expect(count).To(Equal(2))
@@ -83,7 +82,7 @@ var _ = Describe("MultiGit", func() {
 				Expect(err).To(BeNil())
 				repoList = "dir-1,dir-2"
 
-				output, err := helpers.RunMultiGit("checkout -b test-branch", false, baseDir, repoList, true)
+				output, err := helpers.RunMultiGit("checkout -b test-branch", false, baseDir, repoList, false)
 				Expect(err).To(BeNil())
 				count := strings.Count(output, "Switched to a new branch 'test-branch'")
 				Expect(count).To(Equal(2))
@@ -103,7 +102,7 @@ var _ = Describe("MultiGit", func() {
 				Expect(err).To(BeNil())
 				repoList = "dir-1,dir-2"
 
-				output, err := helpers.RunMultiGit("status", false, baseDir, repoList, true)
+				output, err := helpers.RunMultiGit("status", false, baseDir, repoList, false)
 				Expect(err).To(BeNil())
 				Expect(output).To(ContainSubstring("fatal: not a git repository"))
 
@@ -125,15 +124,15 @@ var _ = Describe("MultiGit", func() {
 					Expect(err).To(BeNil())
 					repoList = "dir-1,dir-2"
 
-					output, err := helpers.RunMultiGit("status", true, baseDir, repoList, true)
+					output, err := helpers.RunMultiGit("status", true, baseDir, repoList, false)
 					Expect(err).To(BeNil())
 					Expect(output).To(ContainSubstring("[dir-1]: git status\nfatal: not a git repository"))
-					Expect(output).To(ContainSubstring("[dir-2]: git status\nOn branch master"))
+					Expect(output).To(ContainSubstring("[dir-2]: git status\nOn branch main"))
 
 					output, err = helpers.RunMultiGit("status", true, baseDir, repoList, false)
 					Expect(err).To(BeNil())
 					Expect(output).To(ContainSubstring("[dir-1]: git status\nfatal: not a git repository"))
-					Expect(output).To(ContainSubstring("[dir-2]: git status\nOn branch master"))
+					Expect(output).To(ContainSubstring("[dir-2]: git status\nOn branch main"))
 				})
 			})
 
@@ -145,7 +144,7 @@ var _ = Describe("MultiGit", func() {
 					Expect(err).To(BeNil())
 					repoList = "dir-1,dir-2"
 
-					output, err := helpers.RunMultiGit("status", false, baseDir, repoList, true)
+					output, err := helpers.RunMultiGit("status", false, baseDir, repoList, false)
 					Expect(err).To(BeNil())
 					Expect(output).To(ContainSubstring("[dir-1]: git status\nfatal: not a git repository"))
 					Expect(output).ShouldNot(ContainSubstring("[dir-2]"))

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -24,6 +25,7 @@ func NewRepoManager(baseDir string,
 		return
 	}
 
+	baseDir, err = filepath.Abs(baseDir)
 	if len(repoNames) == 0 {
 		err = fmt.Errorf("repo list can't be empty")
 		return
@@ -37,8 +39,12 @@ func NewRepoManager(baseDir string,
 		ignoreErrors: ignoreErrors,
 	}
 
-	for _, repo := range repoNames {
-		path := baseDir + repo
+	for _, r := range repoNames {
+		if r == "" {
+			err = fmt.Errorf("repo name can't be empty")
+			return
+		}
+		path := baseDir + r
 		repoManager.repos = append(repoManager.repos, path)
 	}
 
