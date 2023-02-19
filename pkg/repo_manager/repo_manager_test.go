@@ -18,18 +18,16 @@ var _ = Describe("RepoManager", func() {
 	baseDir, _ := filepath.Abs("tmp/test-multi-git")
 	var repoList []string
 
-	removeTestDirs := func() {
-		err := os.RemoveAll(baseDir)
-		Expect(err).To(BeNil())
-	}
-
 	BeforeEach(func() {
 		err := helpers.CreateDir(baseDir, "test-dir1", true)
 		Expect(err).To(BeNil())
 		repoList = []string{"test-dir1"}
 	})
 
-	AfterEach(removeTestDirs)
+	AfterEach(func ()  {
+		err := os.RemoveAll(baseDir)
+		Expect(err).To(BeNil())
+	})
 
 	Describe("Initializing a new repoManager", func () {
 		It("Should fail with invalid base dir", func() {
@@ -97,7 +95,5 @@ var _ = Describe("RepoManager", func() {
 			Expect(ok).To(BeTrue())
 		})
 	})
-
-
 
 })
