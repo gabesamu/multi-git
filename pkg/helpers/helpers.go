@@ -57,7 +57,7 @@ func AddFiles(baseDir string,
 }
 
 func RunMultiGit(command string, ignoreErrors bool, mgRoot string, mgRepos string, useConfigFile bool) (output string, err error) {
-	out, err := exec.Command("which", "mg2").CombinedOutput()
+	out, err := exec.Command("which", "multi-git").CombinedOutput()
 	if err != nil {
 		return
 	}
@@ -67,7 +67,7 @@ func RunMultiGit(command string, ignoreErrors bool, mgRoot string, mgRepos strin
 		return
 	}
 
-	components := []string{"--command", command}
+	components := []string{command}
 	env := os.Environ()
 
 	if ignoreErrors {
@@ -76,7 +76,7 @@ func RunMultiGit(command string, ignoreErrors bool, mgRoot string, mgRepos strin
 
 	env = append(env, "MG_ROOT="+mgRoot, "MG_REPOS="+mgRepos)
 
-	cmd := exec.Command("mg2", components...)
+	cmd := exec.Command("multi-git", components...)
 	cmd.Env = env
 	out, err = cmd.CombinedOutput()
 	output = string(out)
