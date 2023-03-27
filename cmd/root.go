@@ -10,8 +10,9 @@ import (
 	"github.com/0xlucius/multi-git/pkg/repo_manager"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
-var ignoreErrors bool
+var configFile string
 var rootCmd = &cobra.Command{
     Use:   "multi-git",
     Short: "Runs git commands over multiple repos",
@@ -33,7 +34,7 @@ MG_REPOS: list of repository names to operate on`,
 					repoNames = strings.Split(os.Getenv("MG_REPOS"), ",")
 			}
 
-			repoManager, err := repo_manager.NewRepoManager(root, repoNames, ignoreErrors)
+			repoManager, err := repo_manager.NewRepoManager(root, repoNames, viper.GetBool("ignore-errors"))
 			if err != nil {
 					log.Fatal(err)
 			}
@@ -61,10 +62,45 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().BoolVar(
-			&ignoreErrors,
+	cobra.OnInitialize(initConfig)
+
+	home, err := os.UserHomeDir();
+	if err != nil {
+		panic("unable to get user home directory")
+	}
+	defaultConfigPath := path.Join(home, ".multi-git.toml")
+
+	rootCmd.Flags().StringVar(&configFile, "config", defaultConfigPath, "config file (default is $HOME/.multi-git.toml)")
+	rootCmd.Flags().Bool(
 			"ignore-errors",
 			false,
 			`will continue executing the command for all repos if ignore-errors
 							 is true otherwise it will stop execution when an error occurs`)
+	err = viper.BindPFlag("ignore-errors", rootCmd.Flags().Lookup("ignore-errors"))
+	if err != nil {
+		panic("unable to bind flag 'ignore-errors'")
+	}
+}
+
+func initConfig() {
+	_, err := os.Stat(configFile)
+	if os.IsNotExist(err) {
+		log.Fatal("config file doesn't exist")
+	}
+	viper.SetConfigFile(configFile)
+	err = viper.ReadInConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	viper.SetEnvPrefix("MG")
+    err = viper.BindEnv("root")
+    if err != nil {
+		log.Fatal(err)
+	}
+
+    err = viper.BindEnv("repos")
+    if err != nil {
+		log.Fatal(err)
+	}
 }

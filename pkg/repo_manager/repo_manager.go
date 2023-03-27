@@ -14,8 +14,8 @@ type RepoManager struct {
 }
 
 func NewRepoManager(baseDir string,
-										repoNames []string,
-										ignoreErrors bool) (repoManager *RepoManager, err error) {
+					repoNames []string,
+					ignoreErrors bool) (repoManager *RepoManager, err error) {
 
 	_, err = os.Stat(baseDir)
 	if err != nil {
