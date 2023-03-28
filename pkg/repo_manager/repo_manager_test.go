@@ -19,9 +19,9 @@ var _ = Describe("RepoManager", func() {
 	var repoList []string
 
 	BeforeEach(func() {
-		err := helpers.CreateDir(baseDir, "test-dir1", true)
+		err := helpers.CreateDir(baseDir, "test-dir-1", true)
 		Expect(err).To(BeNil())
-		repoList = []string{"test-dir1"}
+		repoList = []string{"test-dir-1"}
 	})
 
 	AfterEach(func ()  {
