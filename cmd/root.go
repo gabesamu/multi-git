@@ -68,9 +68,9 @@ func init() {
 	if err != nil {
 		panic("unable to get user home directory")
 	}
-	defaultConfigPath := path.Join(home, ".multi-git.toml")
+	defaultConfigPath := path.Join(home, ".config/multi-git/config.toml")
 
-	rootCmd.Flags().StringVar(&configFile, "config", defaultConfigPath, "config file (default is $HOME/.multi-git.toml)")
+	rootCmd.Flags().StringVar(&configFile, "config", defaultConfigPath, "config file (default is $HOME/.config/multi-git/config.toml)")
 	rootCmd.Flags().Bool(
 			"ignore-errors",
 			false,
